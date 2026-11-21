@@ -96,6 +96,23 @@ details p{margin:8px 0 0; color:var(--text)}
 .win h2{font-size:26px; color:var(--lime); text-shadow:0 0 14px var(--lime)}
 .rank{display:inline-block; margin:8px 0; padding:8px 14px; border:2px solid var(--gold); color:var(--gold); border-radius:999px; font-weight:800; letter-spacing:.08em}
 .small{font-size:13px; color:var(--muted)}
+#wheel{width:100%; max-width:380px; display:block; margin:8px auto; touch-action:manipulation}
+#wheel text{font-family:Montserrat,"Segoe UI",system-ui,sans-serif; font-weight:800; user-select:none}
+#wheel .ol{cursor:pointer}
+.wctl{display:flex; align-items:center; gap:10px; margin-top:6px}
+.wctl input[type=range]{flex:1; accent-color:#35f0ff; height:36px}
+.wctl button{min-width:48px; font-size:20px; padding:8px 14px}
+.agentcard{
+  margin:14px auto 10px; max-width:340px; text-align:left; padding:16px 18px; border-radius:16px;
+  background:linear-gradient(135deg,#111a44,#2a0f4f); border:2px solid var(--cyan);
+  box-shadow:0 0 22px rgba(53,240,255,.35), 0 0 40px rgba(255,61,242,.2) inset;
+}
+.agentcard .ac-top{font-size:11px; letter-spacing:.28em; color:var(--cyan); font-weight:800}
+.agentcard .ac-name{font-size:24px; font-weight:800; color:#fff; margin:6px 0 10px; text-shadow:0 0 10px var(--pink); word-break:break-word}
+.agentcard .ac-row{display:flex; justify-content:space-between; gap:10px; padding:5px 0; border-top:1px solid rgba(255,255,255,.12); font-size:14px}
+.agentcard .ac-row span{color:var(--muted); letter-spacing:.14em; font-size:12px; align-self:center}
+.agentcard .ac-row b{color:var(--lime); text-align:right}
+.agentcard .ac-foot{margin-top:8px; font-size:10px; letter-spacing:.2em; color:var(--pink); font-weight:700}
 canvas#fx{position:fixed; inset:0; pointer-events:none; z-index:50}
 footer{margin-top:26px; text-align:center; color:#5e6ca3; font-size:12px; letter-spacing:.1em}
 @media (prefers-reduced-motion:reduce){section.on{animation:none}.shake{animation:none}}
@@ -115,6 +132,7 @@ footer{margin-top:26px; text-align:center; color:#5e6ca3; font-size:12px; letter
     <a href="#briefing" data-nav="briefing">① Briefing</a>
     <a href="#codes" data-nav="codes">② Les verrous</a>
     <a href="#drone" data-nav="drone">③ Caméra du toit</a>
+    <a href="#decodeur" data-nav="decodeur">④ Décodeur</a>
   </nav>
 
   <!-- BRIEFING -->
@@ -159,9 +177,16 @@ footer{margin-top:26px; text-align:center; color:#5e6ca3; font-size:12px; letter
       <h2>Le coffre s'ouvre !</h2>
       <p>Les lumières de Néopolis se rallument une à une. L'Archive est sauvée, et le Fantôme a laissé un dernier message sur l'écran :</p>
       <p><em>« Bien joué, Lynx… Mais ce n'est que le début. »</em></p>
-      <div class="rank" id="rank"></div>
-      <p id="timeTxt" class="small"></p>
-      <p>Imprimez le <b>certificat d'agent</b> à la dernière page de votre fichier, écrivez votre nom d'équipe et collez-le fièrement au mur.</p>
+      <div class="agentcard" id="agentcard">
+        <div class="ac-top">CARTE D'AGENT · OPÉRATION LUMEN</div>
+        <div class="ac-name" id="acName">ÉQUIPE LYNX</div>
+        <div class="ac-row"><span>RANG</span><b id="rank"></b></div>
+        <div class="ac-row"><span>TEMPS</span><b id="timeTxt"></b></div>
+        <div class="ac-foot">NÉOPOLIS · MISSION ACCOMPLIE</div>
+      </div>
+      <div class="row" style="justify-content:center"><input type="text" id="teamIn" maxlength="18" placeholder="NOM D'ÉQUIPE" aria-label="Nom de l'équipe" style="flex:0 1 260px;font-size:16px"></div>
+      <p class="small">Écris le nom de ton équipe, puis fais une capture d'écran de ta carte d'agent pour la partager.</p>
+      <p>Note ton rang et ton temps dans le <b>rapport de mission</b> à la fin de ton fichier PDF.</p>
       <p class="small">La prochaine mission arrive bientôt chez AlpinaDoc.</p>
     </div>
 
@@ -180,13 +205,30 @@ footer{margin-top:26px; text-align:center; color:#5e6ca3; font-size:12px; letter
     </div>
   </section>
 
+  <!-- DECODEUR -->
+  <section id="sec-decodeur">
+    <div class="card">
+      <div class="tag">Outil de décodage</div>
+      <h2>La roue numérique</h2>
+      <p>Amène le <b>A</b> du cercle intérieur en face de la lettre indiquée dans la vidéo de briefing. Ensuite, chaque lettre du cercle extérieur (le message) se lit sur le cercle intérieur (les vraies lettres).</p>
+      <svg id="wheel" viewBox="-165 -165 330 330" role="img" aria-label="Roue de décodage : cercle extérieur fixe, cercle intérieur mobile"></svg>
+      <div class="wctl">
+        <button class="btn ghost" id="wMinus" aria-label="Tourner vers la gauche">◀</button>
+        <input type="range" id="wRange" min="0" max="25" value="0" aria-label="Décalage de la roue">
+        <button class="btn ghost" id="wPlus" aria-label="Tourner vers la droite">▶</button>
+      </div>
+      <p class="small">Astuce : touche une lettre du cercle extérieur pour y amener le A.</p>
+      <div class="row"><a class="btn" href="#codes">Saisir mon code</a></div>
+    </div>
+  </section>
+
   <footer>ALPINADOC · USAGE PERSONNEL UNIQUEMENT</footer>
 </div>
 
 <script>
 "use strict";
 var SALT = "alpina-neon-1";
-var HASHES = {"1": "1567597354893129", "2": "6440431768120626", "3": "51596138616611", "4": "1045469981459414", "5": "8293252056204571"};
+var HASHES = {"1": "1567597354893129", "2": "6440431768120626", "3": "3052605814787830", "4": "1045469981459414", "5": "8293252056204571"};
 var REVEAL = {"1": "7", "2": "3", "3": "9", "4": "1"};
 
 /* ---------- hash (cyrb53) ---------- */
@@ -211,18 +253,18 @@ function check(step, value){
 
 /* ---------- contenu des verrous ---------- */
 var LOCKS = [
-  {id:1, title:"Le message chiffré", ask:"Quel est le mot de passe caché dans le message ?", ph:"MOT", max:12,
+  {id:1, title:"Le message chiffré", ask:"Quel est le mot de passe caché à la fin du message ?", ph:"MOT", max:12,
    ok:"Verrou 1 ouvert ! Le Fantôme avait caché la clé tout au bout de l'horizon.",
-   hints:["Réglez votre roue : la lettre E du cercle extérieur doit être en face du A du cercle intérieur.",
-          "Le premier mot décodé est « LE ». Décodez les autres de la même façon."]},
-  {id:2, title:"Les alibis", ask:"Qui se trouvait sur le Toit ?", ph:"PRÉNOM", max:10,
+   hints:["Pas de roue en papier ? Utilise la roue numérique (onglet ④ Décodeur). Le décalage est donné dans la vidéo de briefing.",
+          "Le premier mot décodé est « TROP ». Le mot de passe est le dernier mot du message."]},
+  {id:2, title:"Les alibis", ask:"Qui se trouvait à la Gare ?", ph:"PRÉNOM", max:10,
    ok:"Bien vu ! Le témoin du toit a débloqué la deuxième porte.",
-   hints:["Commencez par la dernière phrase : un seul prénom a quatre lettres.",
-          "Une fois le Toit attribué, éliminez cette personne des autres lieux."]},
+   hints:["Commence par Zed : il est cité dans deux phrases. Où peut-il être ?",
+          "Zed est sur le Toit. Ensuite, où peut être Jax ? Continue par élimination : le suspect de la Gare n'est cité dans aucune phrase."]},
   {id:3, title:"Le digicode", ask:"Quel est le code à 4 chiffres ?", ph:"····", max:4, numeric:true,
    ok:"Digicode validé ! La troisième porte glisse sans bruit.",
-   hints:["Chaque mini-énigme donne un seul chiffre : lisez bien lequel on vous demande (unités ou dizaines).",
-          "Pour NÉOPOLIS, comptez toutes les lettres, le É compte pour une lettre."]},
+   hints:["Chaque mini-énigme donne un seul chiffre : regarde bien si on demande l'unité ou la dizaine.",
+          "Binaire : additionne les valeurs 8, 4, 2, 1 des LED allumées. Pour BUG : B=2, U=21, G=7, puis additionne."]},
   {id:4, title:"La caméra du toit", ask:"Quel est le code à 3 chiffres ?", ph:"···", max:3, numeric:true,
    ok:"Les enseignes s'éteignent : la voie est libre vers le coffre.",
    hints:["Regardez la vidéo trois fois, en ne suivant qu'une seule forme à chaque fois.",
@@ -247,8 +289,8 @@ function $(id){ return document.getElementById(id); }
 /* ---------- navigation ---------- */
 function route(){
   var h = (location.hash || "").replace("#", "");
-  if (["briefing","codes","drone"].indexOf(h) < 0) h = state.start || Object.keys(state.done).length ? "codes" : "briefing";
-  ["briefing","codes","drone"].forEach(function(id){
+  if (["briefing","codes","drone","decodeur"].indexOf(h) < 0) h = state.start || Object.keys(state.done).length ? "codes" : "briefing";
+  ["briefing","codes","drone","decodeur"].forEach(function(id){
     $("sec-" + id).classList.toggle("on", id === h);
   });
   Array.prototype.forEach.call(document.querySelectorAll("nav a"), function(a){
@@ -354,8 +396,11 @@ function showWin(){
   else if (min <= 45) r = "Agent(e) d'élite";
   else if (min <= 60) r = "Agent(e) confirmé(e)";
   else r = "Recrue brillante";
-  $("rank").textContent = "Rang : " + r;
-  $("timeTxt").textContent = state.start ? "Temps de la mission : " + fmt(ms) : "Chrono non lancé : le rang est un bonus d'honneur.";
+  $("rank").textContent = r;
+  $("timeTxt").textContent = state.start ? fmt(ms) : "non chronométré";
+  var tn = $("teamIn");
+  $("acName").textContent = (state.team || "").trim() ? state.team.toUpperCase() : "ÉQUIPE LYNX";
+  if (tn && !tn.value && state.team) tn.value = state.team;
   tick();
 }
 
@@ -399,6 +444,47 @@ function boom(){
     if (++f < 140) requestAnimationFrame(loop); else x.clearRect(0,0,W,H);
   })();
 }
+
+/* ---------- nom d'équipe ---------- */
+$("teamIn").addEventListener("input", function(){
+  state.team = this.value; save(state);
+  $("acName").textContent = this.value.trim() ? this.value.trim().toUpperCase() : "ÉQUIPE LYNX";
+});
+
+/* ---------- roue numérique ---------- */
+(function(){
+  var svg = $("wheel"), NS = "http://www.w3.org/2000/svg", STEP = 360 / 26, shift = 0;
+  function el(n, a, txt){ var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); if (txt != null) e.textContent = txt; return e; }
+  svg.appendChild(el("circle", {r:160, fill:"#101734", stroke:"#35f0ff", "stroke-width":2}));
+  svg.appendChild(el("circle", {r:118, fill:"none", stroke:"#2a3566", "stroke-width":1}));
+  var inner = el("g", {id:"innerRing"});
+  inner.appendChild(el("circle", {r:112, fill:"#1b1450", stroke:"#ff3df2", "stroke-width":2}));
+  for (var i = 0; i < 26; i++){
+    var a = i * STEP, L = String.fromCharCode(65 + i);
+    var og = el("g", {transform:"rotate(" + a + ")", "class":"ol"});
+    og.appendChild(el("rect", {x:-10, y:-156, width:20, height:34, fill:"transparent"}));
+    og.appendChild(el("text", {x:0, y:-132, "text-anchor":"middle", "font-size":19, fill:"#eaf0ff"}, L));
+    og.appendChild(el("line", {x1:0, y1:-118, x2:0, y2:-122, stroke:"#35f0ff", "stroke-width":1.2}));
+    (function(idx){ og.addEventListener("click", function(){ setShift(idx); }); })(i);
+    svg.appendChild(og);
+    var ig = el("g", {transform:"rotate(" + a + ")"});
+    ig.appendChild(el("text", {x:0, y:-86, "text-anchor":"middle", "font-size":17, fill:"#7dff6b"}, L));
+    ig.appendChild(el("line", {x1:0, y1:-110, x2:0, y2:-106, stroke:"#ff3df2", "stroke-width":1.2}));
+    inner.appendChild(ig);
+  }
+  inner.appendChild(el("circle", {r:5, fill:"#ff3df2"}));
+  svg.appendChild(inner);
+  function setShift(n){
+    shift = ((n % 26) + 26) % 26;
+    inner.setAttribute("transform", "rotate(" + (shift * STEP) + ")");
+    $("wRange").value = shift;
+  }
+  $("wRange").addEventListener("input", function(){ setShift(parseInt(this.value, 10) || 0); });
+  $("wMinus").addEventListener("click", function(){ setShift(shift - 1); });
+  $("wPlus").addEventListener("click", function(){ setShift(shift + 1); });
+  window.__wheelShift = function(){ return shift; };
+  setShift(0);
+})();
 
 buildLocks(); refresh(); route(); tick();
 </script>
