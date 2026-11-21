@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mission Néon · Opération Lumen · AlpinaDoc</title>
+<style>
+:root{
+  --bg:#090c17; --panel:#121830; --panel2:#182042; --line:#2a3566;
+  --cyan:#35f0ff; --pink:#ff3df2; --lime:#7dff6b; --gold:#d9b44a; --red:#ff4d6d;
+  --text:#eaf0ff; --muted:#9aa8d6;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:radial-gradient(1200px 600px at 80% -10%, #1b1050 0%, transparent 60%),
+  radial-gradient(900px 500px at -10% 10%, #06324a 0%, transparent 55%), var(--bg);
+  color:var(--text); font:16px/1.55 Montserrat,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  min-height:100vh;
+}
+.wrap{max-width:760px; margin:0 auto; padding:18px 16px 60px}
+header{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 0 14px}
+.logo{font-weight:800; letter-spacing:.28em; font-size:12px; color:var(--muted)}
+.logo b{color:var(--gold)}
+h1{
+  margin:6px 0 2px; font-size:clamp(28px,7vw,44px); line-height:1.05; letter-spacing:.04em; font-weight:800;
+  color:#fff; text-shadow:0 0 6px var(--cyan),0 0 18px var(--cyan),0 0 40px #0aa;
+}
+h1 span{color:var(--pink); text-shadow:0 0 6px var(--pink),0 0 18px var(--pink),0 0 40px #a0a}
+.sub{color:var(--muted); margin:0 0 18px}
+nav{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 18px}
+nav a{
+  flex:1 1 140px; text-align:center; text-decoration:none; color:var(--text); background:var(--panel);
+  border:1px solid var(--line); border-radius:12px; padding:11px 10px; font-weight:700; font-size:14px;
+}
+nav a.on{border-color:var(--cyan); box-shadow:0 0 0 1px var(--cyan) inset,0 0 18px rgba(53,240,255,.25)}
+section{display:none}
+section.on{display:block; animation:fade .35s ease}
+@keyframes fade{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:none}}
+.card{
+  background:linear-gradient(180deg,var(--panel),var(--panel2)); border:1px solid var(--line);
+  border-radius:16px; padding:16px; margin:0 0 14px;
+}
+.card h2{margin:0 0 6px; font-size:18px; letter-spacing:.02em}
+.card p{margin:6px 0}
+.tag{font-size:11px; letter-spacing:.2em; font-weight:700; color:var(--cyan); text-transform:uppercase}
+video{width:100%; border-radius:12px; background:#000; border:1px solid var(--line); display:block}
+.btn{
+  appearance:none; border:0; cursor:pointer; font:inherit; font-weight:800; letter-spacing:.04em;
+  color:#06101c; background:var(--cyan); padding:12px 18px; border-radius:12px;
+  box-shadow:0 0 18px rgba(53,240,255,.45); text-decoration:none; display:inline-block;
+}
+.btn:active{transform:scale(.98)}
+.btn.pink{background:var(--pink); box-shadow:0 0 18px rgba(255,61,242,.45)}
+.btn.ghost{background:transparent; color:var(--muted); border:1px solid var(--line); box-shadow:none; font-weight:600}
+.btn[disabled]{opacity:.45; cursor:not-allowed; box-shadow:none}
+.row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px}
+input[type=text]{
+  flex:1 1 180px; min-width:0; font:inherit; font-size:20px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--text); background:#0a0f22; border:2px solid var(--line); border-radius:12px; padding:11px 14px; outline:0;
+}
+input[type=text]:focus{border-color:var(--cyan); box-shadow:0 0 14px rgba(53,240,255,.35)}
+input[type=text]::placeholder{color:#4b5a92; letter-spacing:.1em; font-weight:600}
+.msg{min-height:24px; margin-top:10px; font-weight:600}
+.msg.bad{color:var(--red)} .msg.good{color:var(--lime)}
+.shake{animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.lock{display:flex; align-items:center; gap:12px}
+.badge{
+  width:42px; height:42px; border-radius:50%; flex:0 0 42px; display:grid; place-items:center; font-weight:800;
+  border:2px solid var(--line); color:var(--muted); background:#0a0f22;
+}
+.card.done{border-color:rgba(125,255,107,.6); box-shadow:0 0 22px rgba(125,255,107,.16)}
+.card.done .badge{border-color:var(--lime); color:var(--lime)}
+.reveal{
+  display:none; margin-top:12px; padding:12px 14px; border-radius:12px; background:rgba(125,255,107,.08);
+  border:1px dashed var(--lime);
+}
+.card.done .reveal{display:block}
+.digit{
+  display:inline-grid; place-items:center; width:46px; height:56px; margin-left:8px; font-size:34px; font-weight:800;
+  color:var(--lime); text-shadow:0 0 12px var(--lime); border:2px solid var(--lime); border-radius:10px; vertical-align:middle;
+}
+details{margin-top:10px; color:var(--muted)}
+summary{cursor:pointer; font-weight:600; color:var(--gold)}
+details p{margin:8px 0 0; color:var(--text)}
+.hint{display:none}
+.hint.on{display:block}
+.progress{display:flex; gap:8px; margin:0 0 14px}
+.progress i{flex:1; height:8px; border-radius:6px; background:#1b2350}
+.progress i.on{background:var(--lime); box-shadow:0 0 10px var(--lime)}
+.finalcard{border-color:rgba(255,61,242,.55)}
+.finalcard.locked{opacity:.55}
+.win{text-align:center}
+.win h2{font-size:26px; color:var(--lime); text-shadow:0 0 14px var(--lime)}
+.rank{display:inline-block; margin:8px 0; padding:8px 14px; border:2px solid var(--gold); color:var(--gold); border-radius:999px; font-weight:800; letter-spacing:.08em}
+.small{font-size:13px; color:var(--muted)}
+canvas#fx{position:fixed; inset:0; pointer-events:none; z-index:50}
+footer{margin-top:26px; text-align:center; color:#5e6ca3; font-size:12px; letter-spacing:.1em}
+@media (prefers-reduced-motion:reduce){section.on{animation:none}.shake{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="wrap">
+  <header>
+    <div class="logo"><b>ALPINA</b>DOC</div>
+    <div class="small" id="clock" aria-live="off"></div>
+  </header>
+  <h1>MISSION <span>NÉON</span></h1>
+  <p class="sub">Opération Lumen · Néopolis, 23 h 47</p>
+
+  <nav aria-label="Navigation">
+    <a href="#briefing" data-nav="briefing">① Briefing</a>
+    <a href="#codes" data-nav="codes">② Les verrous</a>
+    <a href="#drone" data-nav="drone">③ Caméra du toit</a>
+  </nav>
+
+  <!-- BRIEFING -->
+  <section id="sec-briefing">
+    <div class="card">
+      <div class="tag">Message reçu</div>
+      <h2>Agent, regardez ceci avant de commencer.</h2>
+      <video controls playsinline preload="metadata" poster="briefing.jpg" src="briefing.mp4"></video>
+      <p class="small">La vidéo n'a pas de son : lisez les messages à l'écran. Vous pouvez la revoir autant de fois que nécessaire.</p>
+      <div class="row">
+        <button class="btn pink" id="startBtn">▶ Démarrer le chrono (60 min)</button>
+        <a class="btn ghost" href="#codes">Aller aux verrous</a>
+      </div>
+      <p class="small" id="startInfo"></p>
+    </div>
+  </section>
+
+  <!-- CODES -->
+  <section id="sec-codes">
+    <div class="progress" id="progress"><i></i><i></i><i></i><i></i></div>
+
+    <div id="locks"></div>
+
+    <div class="card finalcard locked" id="final">
+      <div class="lock">
+        <div class="badge">★</div>
+        <div>
+          <div class="tag" style="color:var(--pink)">Coffre final</div>
+          <h2 style="margin:0">Code à 4 chiffres</h2>
+        </div>
+      </div>
+      <p>Entrez les 4 chiffres reçus en ouvrant les verrous 1, 2, 3 et 4, dans cet ordre.</p>
+      <div class="row">
+        <input type="text" id="finalInput" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="····" aria-label="Code du coffre final" disabled>
+        <button class="btn pink" id="finalBtn" disabled>Ouvrir</button>
+      </div>
+      <div class="msg" id="finalMsg"></div>
+    </div>
+
+    <div class="card win" id="win" style="display:none">
+      <div class="tag">Mission accomplie</div>
+      <h2>Le coffre s'ouvre !</h2>
+      <p>Les lumières de Néopolis se rallument une à une. L'Archive est sauvée, et le Fantôme a laissé un dernier message sur l'écran :</p>
+      <p><em>« Bien joué, Lynx… Mais ce n'est que le début. »</em></p>
+      <div class="rank" id="rank"></div>
+      <p id="timeTxt" class="small"></p>
+      <p>Imprimez le <b>certificat d'agent</b> à la dernière page de votre fichier, écrivez votre nom d'équipe et collez-le fièrement au mur.</p>
+      <p class="small">La prochaine mission arrive bientôt chez AlpinaDoc.</p>
+    </div>
+
+    <div class="row"><button class="btn ghost" id="resetBtn">Recommencer depuis le début</button></div>
+  </section>
+
+  <!-- DRONE -->
+  <section id="sec-drone">
+    <div class="card">
+      <div class="tag">Caméra 07 · Toit de la Tour Lumen</div>
+      <h2>Verrou 4 : comptez les flashs</h2>
+      <video controls playsinline preload="metadata" poster="drone.jpg" src="drone.mp4"></video>
+      <p>Trois enseignes clignotent sur le toit. Comptez, pour chacune, les <b>flashs complets</b> (très lumineux). Les petits clignotements faibles sont des leurres.</p>
+      <p class="small">Pas de son. Vous pouvez mettre en pause et revoir la vidéo une fois par enseigne.</p>
+      <div class="row"><a class="btn" href="#codes">Saisir mon code</a></div>
+    </div>
+  </section>
+
+  <footer>ALPINADOC · USAGE PERSONNEL UNIQUEMENT</footer>
+</div>
+
+<script>
+"use strict";
+var SALT = "alpina-neon-1";
+var HASHES = {"1": "1567597354893129", "2": "6440431768120626", "3": "51596138616611", "4": "1045469981459414", "5": "8293252056204571"};
+var REVEAL = {"1": "7", "2": "3", "3": "9", "4": "1"};
+
+/* ---------- hash (cyrb53) ---------- */
+function cyrb53(str, seed){
+  seed = seed || 0;
+  var h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+  for (var i = 0, ch; i < str.length; i++){
+    ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+}
+function norm(s){
+  return String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+}
+function check(step, value){
+  return String(cyrb53(SALT + ":" + step + ":" + norm(value))) === HASHES[step];
+}
+
+/* ---------- contenu des verrous ---------- */
+var LOCKS = [
+  {id:1, title:"Le message chiffré", ask:"Quel est le mot de passe caché dans le message ?", ph:"MOT", max:12,
+   ok:"Verrou 1 ouvert ! Le Fantôme avait caché la clé tout au bout de l'horizon.",
+   hints:["Réglez votre roue : la lettre E du cercle extérieur doit être en face du A du cercle intérieur.",
+          "Le premier mot décodé est « LE ». Décodez les autres de la même façon."]},
+  {id:2, title:"Les alibis", ask:"Qui se trouvait sur le Toit ?", ph:"PRÉNOM", max:10,
+   ok:"Bien vu ! Le témoin du toit a débloqué la deuxième porte.",
+   hints:["Commencez par la dernière phrase : un seul prénom a quatre lettres.",
+          "Une fois le Toit attribué, éliminez cette personne des autres lieux."]},
+  {id:3, title:"Le digicode", ask:"Quel est le code à 4 chiffres ?", ph:"····", max:4, numeric:true,
+   ok:"Digicode validé ! La troisième porte glisse sans bruit.",
+   hints:["Chaque mini-énigme donne un seul chiffre : lisez bien lequel on vous demande (unités ou dizaines).",
+          "Pour NÉOPOLIS, comptez toutes les lettres, le É compte pour une lettre."]},
+  {id:4, title:"La caméra du toit", ask:"Quel est le code à 3 chiffres ?", ph:"···", max:3, numeric:true,
+   ok:"Les enseignes s'éteignent : la voie est libre vers le coffre.",
+   hints:["Regardez la vidéo trois fois, en ne suivant qu'une seule forme à chaque fois.",
+          "Un flash complet est très lumineux. Ignorez les petits clignotements faibles."]}
+];
+var WRONG = [
+  "Accès refusé. Quelque part, le Fantôme rigole…",
+  "Mauvais code. Respirez, relisez l'énoncé.",
+  "Négatif. Vérifiez chaque lettre ou chiffre.",
+  "Le verrou clignote en rouge. Ce n'est pas encore ça.",
+  "Presque ? Peut-être. Mais pas assez pour ouvrir la porte."
+];
+
+/* ---------- état ---------- */
+var mem = {};
+function load(){ try{ var s = localStorage.getItem("mneon1"); return s ? JSON.parse(s) : {}; }catch(e){ return mem; } }
+function save(st){ mem = st; try{ localStorage.setItem("mneon1", JSON.stringify(st)); }catch(e){} }
+var state = load(); state.done = state.done || {}; state.errors = state.errors || {};
+
+function $(id){ return document.getElementById(id); }
+
+/* ---------- navigation ---------- */
+function route(){
+  var h = (location.hash || "").replace("#", "");
+  if (["briefing","codes","drone"].indexOf(h) < 0) h = state.start || Object.keys(state.done).length ? "codes" : "briefing";
+  ["briefing","codes","drone"].forEach(function(id){
+    $("sec-" + id).classList.toggle("on", id === h);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("nav a"), function(a){
+    a.classList.toggle("on", a.getAttribute("data-nav") === h);
+  });
+  if (h !== "drone"){ var v = document.querySelector("#sec-drone video"); if (v) v.pause(); }
+  if (h !== "briefing"){ var b = document.querySelector("#sec-briefing video"); if (b) b.pause(); }
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+
+/* ---------- chrono ---------- */
+function fmt(ms){
+  var s = Math.max(0, Math.round(ms / 1000)), m = Math.floor(s / 60), r = s % 60;
+  return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r;
+}
+function tick(){
+  var el = $("clock");
+  if (state.start && !state.end){ el.textContent = "⏱ " + fmt(Date.now() - state.start); }
+  else if (state.end){ el.textContent = "⏱ " + fmt(state.end - state.start); }
+  else { el.textContent = ""; }
+}
+setInterval(tick, 1000);
+$("startBtn").addEventListener("click", function(){
+  if (!state.start){ state.start = Date.now(); save(state); }
+  $("startInfo").textContent = "Chrono lancé. Bonne chance, Agent !";
+  tick();
+  location.hash = "#codes";
+});
+if (state.start) $("startInfo").textContent = "Chrono déjà lancé.";
+
+/* ---------- verrous ---------- */
+function buildLocks(){
+  var box = $("locks"); box.innerHTML = "";
+  LOCKS.forEach(function(L){
+    var d = document.createElement("div");
+    d.className = "card" + (state.done[L.id] ? " done" : "");
+    d.id = "lock" + L.id;
+    d.innerHTML =
+      '<div class="lock"><div class="badge">' + L.id + '</div><div>' +
+      '<div class="tag">Verrou ' + L.id + '</div><h2 style="margin:0">' + L.title + '</h2></div></div>' +
+      '<p>' + L.ask + '</p>' +
+      '<div class="row"><input type="text" id="in' + L.id + '" maxlength="' + L.max + '" placeholder="' + L.ph + '"' +
+      (L.numeric ? ' inputmode="numeric"' : '') + ' autocomplete="off" autocapitalize="characters" aria-label="Réponse du verrou ' + L.id + '">' +
+      '<button class="btn" id="go' + L.id + '">Ouvrir</button></div>' +
+      '<div class="msg" id="msg' + L.id + '"></div>' +
+      '<details><summary>Besoin d\'un coup de pouce ?</summary>' +
+      '<p class="hint" id="h' + L.id + 'a">💡 ' + L.hints[0] + '</p>' +
+      '<p class="hint" id="h' + L.id + 'b">💡 ' + L.hints[1] + '</p>' +
+      '<div class="row"><button class="btn ghost" id="hb' + L.id + '">Afficher un indice</button></div></details>' +
+      '<div class="reveal" id="rev' + L.id + '"><b>' + L.ok + '</b><br>Chiffre n°' + L.id + ' du coffre :' +
+      '<span class="digit">' + REVEAL[L.id] + '</span></div>';
+    box.appendChild(d);
+    var inp = d.querySelector("input"), go = d.querySelector("#go" + L.id), hb = d.querySelector("#hb" + L.id);
+    var shown = 0;
+    if (state.done[L.id]){ inp.disabled = true; go.disabled = true; inp.value = "✓"; }
+    function submit(){
+      var v = inp.value.trim();
+      if (!v) return;
+      if (check(L.id, v)){
+        state.done[L.id] = true; save(state);
+        d.classList.add("done"); inp.disabled = true; go.disabled = true;
+        $("msg" + L.id).className = "msg good"; $("msg" + L.id).textContent = "Code accepté ✔";
+        refresh();
+        if (window.navigator && navigator.vibrate) try{ navigator.vibrate(60); }catch(e){}
+      } else {
+        state.errors[L.id] = (state.errors[L.id] || 0) + 1; save(state);
+        var m = $("msg" + L.id); m.className = "msg bad";
+        m.textContent = WRONG[(state.errors[L.id] - 1) % WRONG.length];
+        d.classList.remove("shake"); void d.offsetWidth; d.classList.add("shake");
+      }
+    }
+    go.addEventListener("click", submit);
+    inp.addEventListener("keydown", function(e){ if (e.key === "Enter") submit(); });
+    hb.addEventListener("click", function(){
+      if (shown < 2){
+        $("h" + L.id + (shown === 0 ? "a" : "b")).classList.add("on"); shown++;
+        if (shown === 2){ hb.disabled = true; hb.textContent = "Plus d'indice"; }
+      }
+    });
+  });
+}
+
+function refresh(){
+  var n = Object.keys(state.done).length;
+  Array.prototype.forEach.call(document.querySelectorAll("#progress i"), function(i, idx){
+    i.classList.toggle("on", idx < n);
+  });
+  var f = $("final"), fi = $("finalInput"), fb = $("finalBtn");
+  var all = n >= 4;
+  f.classList.toggle("locked", !all);
+  if (!state.end){ fi.disabled = !all; fb.disabled = !all; }
+  if (state.end){ showWin(); }
+}
+
+function showWin(){
+  $("win").style.display = "block";
+  $("final").style.display = "none";
+  var ms = state.end - (state.start || state.end);
+  var min = ms / 60000, r;
+  if (!state.start) r = "Agent(e) d'élite";
+  else if (min <= 30) r = "Légende de Néopolis";
+  else if (min <= 45) r = "Agent(e) d'élite";
+  else if (min <= 60) r = "Agent(e) confirmé(e)";
+  else r = "Recrue brillante";
+  $("rank").textContent = "Rang : " + r;
+  $("timeTxt").textContent = state.start ? "Temps de la mission : " + fmt(ms) : "Chrono non lancé : le rang est un bonus d'honneur.";
+  tick();
+}
+
+function finalSubmit(){
+  var v = $("finalInput").value.trim();
+  if (!v) return;
+  var m = $("finalMsg");
+  if (check(5, v)){
+    state.end = Date.now(); save(state);
+    showWin(); boom();
+    $("win").scrollIntoView({behavior:"smooth", block:"center"});
+  } else {
+    state.errors[5] = (state.errors[5] || 0) + 1; save(state);
+    m.className = "msg bad";
+    m.textContent = state.errors[5] > 2 ? "Toujours fermé. Avez-vous mis les chiffres dans l'ordre des verrous 1, 2, 3, 4 ?" : WRONG[(state.errors[5] - 1) % WRONG.length];
+    var f = $("final"); f.classList.remove("shake"); void f.offsetWidth; f.classList.add("shake");
+  }
+}
+$("finalBtn").addEventListener("click", finalSubmit);
+$("finalInput").addEventListener("keydown", function(e){ if (e.key === "Enter") finalSubmit(); });
+
+$("resetBtn").addEventListener("click", function(){
+  if (confirm("Recommencer ? Votre progression et le chrono seront effacés.")){
+    state = {done:{}, errors:{}}; save(state); location.hash = "#briefing"; location.reload();
+  }
+});
+
+/* ---------- confettis néon ---------- */
+function boom(){
+  if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var c = $("fx"), x = c.getContext("2d"), W = c.width = innerWidth, H = c.height = innerHeight;
+  var cols = ["#35f0ff","#ff3df2","#7dff6b","#d9b44a"], P = [];
+  for (var i = 0; i < 140; i++) P.push({x:W/2, y:H*0.55, vx:(Math.random()-0.5)*14, vy:-Math.random()*14-4,
+    r:Math.random()*4+2, c:cols[i % 4], life:90 + Math.random()*40});
+  var f = 0;
+  (function loop(){
+    x.clearRect(0,0,W,H);
+    P.forEach(function(p){ p.x += p.vx; p.y += p.vy; p.vy += 0.35; p.life--;
+      x.globalAlpha = Math.max(0, p.life/100); x.fillStyle = p.c; x.shadowColor = p.c; x.shadowBlur = 12;
+      x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.3); x.fill(); });
+    if (++f < 140) requestAnimationFrame(loop); else x.clearRect(0,0,W,H);
+  })();
+}
+
+buildLocks(); refresh(); route(); tick();
+</script>
+</body>
+</html>
